@@ -1,153 +1,75 @@
--- Made by Lax Script
--- Universal Script with Real Features & Prank Info Tab
+-- Made by Lax Script | Full Fake Info Prank GUI
 
--- Notify on execution
-game.StarterGui:SetCore("SendNotification", {
-	Title = "Lax Script";
-	Text = "Haha David u got beamed";
-	Duration = 5;
-})
-
--- UI Setup
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-ScreenGui.Name = "LaxUniversalGUI"
-
-local Frame = Instance.new("Frame", ScreenGui)
-Frame.Size = UDim2.new(0, 500, 0, 300)
-Frame.Position = UDim2.new(0.5, -250, 0.5, -150)
-Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-Frame.BorderSizePixel = 0
-Frame.Active = true
-Frame.Draggable = true
-
-local UIStroke = Instance.new("UIStroke", Frame)
-UIStroke.Thickness = 1.5
-UIStroke.Color = Color3.fromRGB(70, 70, 70)
-
-local TabButtons = Instance.new("Frame", Frame)
-TabButtons.Size = UDim2.new(0, 100, 1, 0)
-TabButtons.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-
-local MainTab = Instance.new("Frame", Frame)
-MainTab.Size = UDim2.new(1, -100, 1, 0)
-MainTab.Position = UDim2.new(0, 100, 0, 0)
-MainTab.Visible = true
-MainTab.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-
-local InfoTab = MainTab:Clone()
-InfoTab.Parent = Frame
-InfoTab.Visible = false
-
--- Buttons
-function createTabButton(name, parent, callback)
-	local btn = Instance.new("TextButton", parent)
-	btn.Size = UDim2.new(1, 0, 0, 40)
-	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.Font = Enum.Font.SourceSansBold
-	btn.Text = name
-	btn.TextSize = 18
-	btn.MouseButton1Click:Connect(callback)
-	return btn
-end
-
-local MainBtn = createTabButton("Main", TabButtons, function()
-	MainTab.Visible = true
-	InfoTab.Visible = false
+-- Start notification
+pcall(function()
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "Lax Script",
+		Text = "Haha David u got beamed",
+		Duration = 5
+	})
 end)
 
-local InfoBtn = createTabButton("Info", TabButtons, function()
-	MainTab.Visible = false
-	InfoTab.Visible = true
-end)
+-- Spam Notifications
+local messages = {
+	"⚠️ Your PC is being hacked!",
+	"Loading...",
+	"Gathering all PC data...",
+	"Accessing documents...",
+	"Sending location to server...",
+	"Stealing Roblox credentials...",
+	"Collecting IP packets...",
+	"Compiling system report...",
+	"Tracking mouse movement...",
+	"🛑 Security Breach Detected"
+}
 
--- Main Tab Features
-local function createButton(text, parent, callback)
-	local btn = Instance.new("TextButton", parent)
-	btn.Size = UDim2.new(0, 300, 0, 40)
-	btn.Position = UDim2.new(0.5, -150, 0, #parent:GetChildren() * 45)
-	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.Font = Enum.Font.SourceSans
-	btn.TextSize = 18
-	btn.Text = text
-	btn.MouseButton1Click:Connect(callback)
-	return btn
-end
-
-createButton("Enable Fly (E to toggle)", MainTab, function()
-	local flying = false
-	local UIS = game:GetService("UserInputService")
-	local player = game.Players.LocalPlayer
-	local char = player.Character or player.CharacterAdded:Wait()
-	local humanoidRootPart = char:WaitForChild("HumanoidRootPart")
-	local bp = Instance.new("BodyPosition", humanoidRootPart)
-	local bg = Instance.new("BodyGyro", humanoidRootPart)
-	bp.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-	bg.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
-	bp.Position = humanoidRootPart.Position
-
-	local flying = false
-	local speed = 50
-
-	UIS.InputBegan:Connect(function(input, processed)
-		if input.KeyCode == Enum.KeyCode.E then
-			flying = not flying
-		end
-	end)
-
-	game:GetService("RunService").RenderStepped:Connect(function()
-		if flying then
-			bp.Position = humanoidRootPart.Position + (workspace.CurrentCamera.CFrame.LookVector * speed)
-			bg.CFrame = workspace.CurrentCamera.CFrame
-		end
-	end)
-end)
-
-createButton("ESP (Player boxes)", MainTab, function()
-	for _, player in pairs(game.Players:GetPlayers()) do
-		if player ~= game.Players.LocalPlayer and player.Character then
-			local box = Instance.new("BoxHandleAdornment")
-			box.Adornee = player.Character:FindFirstChild("HumanoidRootPart")
-			box.AlwaysOnTop = true
-			box.ZIndex = 5
-			box.Size = Vector3.new(4, 6, 2)
-			box.Transparency = 0.6
-			box.Color3 = Color3.fromRGB(255, 0, 0)
-			box.Parent = player.Character
-		end
+spawn(function()
+	while true do
+		wait(2)
+		local msg = messages[math.random(1, #messages)]
+		pcall(function()
+			game.StarterGui:SetCore("SendNotification", {
+				Title = "System Alert",
+				Text = msg,
+				Duration = 3
+			})
+		end)
 	end
 end)
 
-createButton("Teleport to Player", MainTab, function()
-	local name = game:GetService("Players").LocalPlayer:PromptForUsername("Enter player name to teleport to:")
-	local target = game.Players:FindFirstChild(name)
-	if target and target.Character then
-		game.Players.LocalPlayer.Character:MoveTo(target.Character:WaitForChild("HumanoidRootPart").Position)
-	end
-end)
+-- GUI
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "LaxPrankGUI"
 
--- Info Tab (Prank Content)
-for _, v in pairs(InfoTab:GetChildren()) do v:Destroy() end
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 500, 0, 300)
+frame.Position = UDim2.new(0.5, -250, 0.5, -150)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.Active = true
+frame.Draggable = true
 
-local Title = Instance.new("TextLabel", InfoTab)
-Title.Size = UDim2.new(1, 0, 0, 50)
-Title.BackgroundTransparency = 1
-Title.Text = "Welcome David"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 28
+local stroke = Instance.new("UIStroke", frame)
+stroke.Color = Color3.fromRGB(255, 0, 0)
+stroke.Thickness = 1.5
 
-local InfoText = Instance.new("TextLabel", InfoTab)
-InfoText.Size = UDim2.new(1, -20, 0, 200)
-InfoText.Position = UDim2.new(0, 10, 0, 60)
-InfoText.BackgroundTransparency = 1
-InfoText.TextXAlignment = Enum.TextXAlignment.Left
-InfoText.TextYAlignment = Enum.TextYAlignment.Top
-InfoText.TextColor3 = Color3.fromRGB(255, 100, 100)
-InfoText.Font = Enum.Font.SourceSans
-InfoText.TextSize = 20
-InfoText.Text = [[
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Text = "Welcome David"
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 28
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+local info = Instance.new("TextLabel", frame)
+info.Position = UDim2.new(0, 10, 0, 50)
+info.Size = UDim2.new(1, -20, 1, -60)
+info.BackgroundTransparency = 1
+info.TextXAlignment = Enum.TextXAlignment.Left
+info.TextYAlignment = Enum.TextYAlignment.Top
+info.Font = Enum.Font.SourceSans
+info.TextSize = 20
+info.TextColor3 = Color3.fromRGB(255, 100, 100)
+info.Text = [[
 IP Address: 198.51.100.23
 Location: 32605 Favara Dr
 Temecula, CA 92592
@@ -155,11 +77,7 @@ United States
 
 ⚠️ Gathering all PC data...
 Please wait...
+📂 Hacking in progress...
+🔄 Loading malware...
+📡 Tracking device...
 ]]
-
-local BackBtn = createButton("Back to Main", InfoTab, function()
-	MainTab.Visible = true
-	InfoTab.Visible = false
-end)
-BackBtn.Position = UDim2.new(0.5, -75, 1, -50)
-
